@@ -1,0 +1,31 @@
+title: Cameron Murr — Engineering Portfolio
+description: >
+  Engineering portfolio. Documenting the build.
+baseurl: ""
+url: "https://cameron-murr.github.io"
+
+author:
+  name: Cameron Murr
+  role: Medical Device Engineer
+  background: >
+    BME + CS + MEng, Duke University
+
+permalink: /projects/:name/
+
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+
+markdown: kramdown
+highlighter: rouge
+
+plugins:
+  - jekyll-seo-tag

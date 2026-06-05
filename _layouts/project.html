@@ -1,0 +1,75 @@
+---
+layout: default
+---
+<article class="project-page">
+
+  <div class="project-header">
+    <div class="project-header-meta">
+      <a href="{{ '/' | relative_url }}#projects" class="back-link">← All Projects</a>
+      <span class="project-status status-{{ page.status }}">{{ page.status | upcase }}</span>
+    </div>
+    <div class="project-header-number">{{ page.number | prepend: '0' }}</div>
+    <h1 class="project-title">{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="project-subtitle">{{ page.subtitle }}</p>{% endif %}
+    <div class="project-tags">
+      {% for tag in page.tags %}
+        <span class="tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <section class="project-section" id="problem">
+      <h2 class="section-label"><span>01</span> Problem Statement</h2>
+      {{ page.problem | markdownify }}
+    </section>
+
+    <section class="project-section" id="architecture">
+      <h2 class="section-label"><span>02</span> System Architecture & Approach</h2>
+      {{ content }}
+    </section>
+
+    <section class="project-section" id="artifacts">
+      <h2 class="section-label"><span>03</span> Key Artifacts</h2>
+      <div class="artifacts-grid">
+        {% for artifact in page.artifacts %}
+        <div class="artifact-card">
+          <div class="artifact-type">{{ artifact.type }}</div>
+          <div class="artifact-name">{{ artifact.name }}</div>
+          {% if artifact.description %}<p class="artifact-desc">{{ artifact.description }}</p>{% endif %}
+          {% if artifact.link %}<a href="{{ artifact.link }}" class="artifact-link" target="_blank">View ↗</a>{% endif %}
+          {% if artifact.status == "in-progress" %}<span class="artifact-wip">In progress</span>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="project-section" id="reflection">
+      <h2 class="section-label"><span>04</span> Engineering Reflection</h2>
+      {{ page.reflection | markdownify }}
+    </section>
+
+    {% if page.standards %}
+    <section class="project-section" id="standards">
+      <h2 class="section-label"><span>—</span> Regulatory & Standards Reference</h2>
+      <ul class="standards-list">
+        {% for s in page.standards %}
+        <li>{{ s }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+  </div>
+
+  <div class="project-nav">
+    {% if page.previous %}
+    <a href="{{ page.previous }}" class="project-nav-link prev">← Previous</a>
+    {% endif %}
+    {% if page.next %}
+    <a href="{{ page.next }}" class="project-nav-link next">Next →</a>
+    {% endif %}
+  </div>
+
+</article>
