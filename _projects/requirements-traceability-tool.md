@@ -22,19 +22,19 @@ artifacts:
   - type: Source Code
     name: tracer.py — Core CLI Tool
     description: Ingests requirements + test cases, validates links, writes matrix to CSV and HTML.
-    link: https://github.com/cameron-murr/req-traceability-tool
+    link: https://github.com/cameron-murr/medtrace
   - type: Data Schema
     name: requirements.yaml — Schema Definition
     description: Annotated example showing REQ ID format, risk control fields, and verification method enum.
-    link: https://github.com/cameron-murr/req-traceability-tool/blob/main/schema/requirements.yaml
+    link: https://github.com/cameron-murr/medtrace/blob/main/schema/requirements.yaml
   - type: Output Artifact
     name: traceability_matrix.html — Sample Output
     description: Rendered matrix from the example dataset — 42 requirements, 3 risk controls, complete coverage.
-    link: https://github.com/cameron-murr/req-traceability-tool/blob/main/examples/output/traceability_matrix.html
+    link: https://github.com/cameron-murr/medtrace/blob/main/examples/output/traceability_matrix.html
   - type: Documentation
     name: README — Design Rationale
     description: Explains data model decisions, regulatory basis, and how to extend to JIRA/Jama connectors.
-    link: https://github.com/cameron-murr/req-traceability-tool#readme
+    link: https://github.com/cameron-murr/medtrace#readme
 
 reflection: |
   The most interesting design decision was the data model for risk controls. The naive approach is to treat a risk control as just another linked item. But under ISO 14971, risk controls need to be classified (inherent safety, protective measures, information for safety) and need to close specific hazardous situations, not just requirements. I structured the YAML schema to capture this — each risk control entry carries its classification and the hazardous situation ID it addresses.
