@@ -31,7 +31,7 @@ artifacts:
   - type: Output Artifact
     name: Sample HTML Matrix
     description: Rendered traceability matrix from the example dataset — 12 requirements, coverage statistics, gap highlighting.
-    link: https://github.com/cameron-murr/medtrace/blob/main/examples/requirements.yaml
+    link: https://github.com/cameron-murr/medtrace/blob/main/examples/sample_output/traceability_matrix.html
   - type: Documentation
     name: README — Design Rationale and Regulatory Context
     description: Explains regulatory basis, data model decisions, CLI usage, and Python API.
