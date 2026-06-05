@@ -22,7 +22,7 @@ problem: |
 artifacts:
   - type: Source Code
     name: medtrace — Python CLI and Library
-    description: Full source — ingest, matrix builder, and five output renderers (HTML, PDF, JSON, XLSX, diff).
+    description: Full source — ingest, matrix builder, and five output renderers (HTML, PDF, JSON, XLSX, diff). Includes README with regulatory context and design rationale.
     link: https://github.com/cameron-murr/medtrace
   - type: Data Schema
     name: examples/requirements.csv — Example Requirements
@@ -31,11 +31,7 @@ artifacts:
   - type: Output Artifact
     name: Sample HTML Matrix
     description: Rendered traceability matrix from the example dataset — 12 requirements, coverage statistics, gap highlighting.
-    link: https://github.com/cameron-murr/medtrace/blob/main/examples/sample_output/traceability_matrix.html
-  - type: Documentation
-    name: README — Design Rationale and Regulatory Context
-    description: Explains regulatory basis, data model decisions, CLI usage, and Python API.
-    link: https://github.com/cameron-murr/medtrace#readme
+    link: https://cameron-murr.github.io/medtrace/examples/sample_output/traceability_matrix.html
 
 reflection: |
   The most consequential design decision was distinguishing two classes of broken links. A dangling link is a requirement that references an ID that doesn't exist in the loaded data — likely a typo or a deleted test case, and the kind of error that surfaces as a finding in an FDA audit. An unlinked entity is a test case or risk control that exists but isn't referenced by any requirement — likely orphaned verification work. Both get flagged, but they mean different things and warrant different corrective actions. Collapsing them into a single "missing link" error would obscure that distinction.
