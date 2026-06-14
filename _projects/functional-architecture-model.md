@@ -1,7 +1,7 @@
 ---
 layout: project
 title: Functional Architecture Model
-subtitle: SysML functional decomposition of a robotic needle insertion subsystem — context diagram, interface definitions, and design rationale.
+subtitle: SysML functional decomposition of a robotic bronchoscopy navigation subsystem — interface registry, requirements hierarchy, and design rationale.
 number: 2
 status: in-progress
 tags:
@@ -9,33 +9,37 @@ tags:
   - Functional Architecture
   - Interventional Robotics
   - Interface Control
-  - Papyrus / Eclipse
+  - Modelio
 
 problem: |
-  Systems architecture for a surgical robot is most useful when it's done before detailed design — when there's still room to surface ambiguous interfaces, misallocated functions, and missing requirements. Most published SysML examples are either toy problems or retroactively describe systems that already exist.
+  Systems architecture for a robotic surgical subsystem is most useful when it's done before detailed design — when there's still room to surface ambiguous interfaces, misallocated functions, and missing requirements. Most published SysML examples are either toy problems or retroactively describe systems that already exist.
 
-  This project takes a different approach: model the functional architecture of a needle insertion subsystem similar in concept to Mendaera's Focalist system (needle guidance for ablation procedures) at the level of detail a systems engineer would produce early in development. The goal is a model package that a design team could use as the basis for interface control documents and a requirements allocation matrix — not just an illustration.
+  This project takes a different approach: model the functional architecture of a robotic bronchoscopy navigation subsystem at the level of detail a systems engineer would produce early in development. The subsystem maintains a real-time estimate of bronchoscope tip position via multi-source sensor fusion, plans a path through the airway tree to a target nodule, and generates motion guidance commands for a downstream robot motion controller. The goal is a model package — interface registry, requirements hierarchy, and SysML model — that a design team could use as the basis for interface control documents and a verification plan, not just an illustration.
 
 artifacts:
-  - type: SysML Model
-    name: Context Diagram (BDD)
-    description: System boundary, external actors, and primary information/energy flows.
-    status: in-progress
-  - type: SysML Model
-    name: Functional Decomposition (BDD + IBD)
-    description: Needle guidance broken into sensing, planning, actuation, and safety monitor subsystems with interfaces.
-    status: in-progress
   - type: Document
-    name: Interface Control Document — Draft
-    description: Structured definition of all inter-subsystem interfaces: signal, mechanical, thermal, data.
-    status: in-progress
+    name: Interface Registry
+    description: Canonical, change-controlled definition of all interfaces across three tiers — external, inter-subsystem, and intra-subsystem — including data items, rates, and latency requirements.
+    status: complete
   - type: Document
-    name: Design Rationale Record
-    description: Explains decomposition decisions and alternative architectures considered.
+    name: Requirements Hierarchy
+    description: Four-tier requirements set (user needs, system requirements, subsystem requirements, component requirements) with allocation and verification methods, structured for traceability analysis.
+    status: complete
+  - type: Document
+    name: Design Decisions Record
+    description: Key architectural decisions with rationale, including sensor fusion architecture, uncertainty propagation, replanning inhibition, and centralized fault handling.
+    status: complete
+  - type: SysML Model
+    name: Modelio Model Set
+    description: Eight SysML diagrams — system context, structural hierarchy, internal block diagrams for each subsystem, a procedure supervisor state machine, and a requirements traceability diagram.
     status: in-progress
 
 reflection: |
-  In progress. Initial observations: the hardest decomposition decision is where to put the safety monitor. The simplest architecture gives it visibility into actuation states and sensor outputs but makes it a passive observer. A more robust design makes it an active participant with command authority — which means it needs its own interface to the actuation subsystem, separate from the planning layer's interface. This changes the IBD significantly and is the kind of decision that gets made in architecture reviews, not during implementation.
+  Establishing the interface registry as the canonical source of truth — rather than treating diagrams as authoritative — surfaced two real defects in the initial concept sketches: an undocumented camera interface feeding the localization subsystem, and a routing contradiction where a guidance command appeared to bypass the central supervisor. Both were caught by auditing diagrams against the registry, which is the direction that catches errors; auditing a registry against diagrams would not have.
+
+  Building out the requirements hierarchy clarified a distinction that's easy to get wrong: a system requirement should describe a required capability — reach into a defined airway workspace — rather than a specific kinematic implementation, such as a bend angle. The bend angle is a derived component requirement, produced by kinematic analysis against the workspace requirement, not asserted from clinical need directly. Getting this level of decomposition right is exactly the kind of judgment that distinguishes a requirement from a design solution.
+
+  Currently building the formal SysML model in Modelio, working from the interface registry and requirements hierarchy as source material rather than deriving the model from the diagrams.
 
 standards:
   - ISO/IEC 19514 — SysML 1.4 specification
@@ -47,21 +51,29 @@ standards:
 
 ### Approach
 
-This model is being built in Papyrus (Eclipse-based, open source SysML tooling) and exported to SVG/PNG for documentation. The model package is organized as:
+The model package is organized around a single canonical interface registry and a four-tier requirements hierarchy, with the SysML model built from both rather than the other way around.
 
-**Level 0 — Context Diagram**: Defines system boundary. External actors include the surgeon, imaging system (fluoroscopy/CT), patient, and facility network. Primary flows into the system: surgeon commands, image data, patient anatomy. Flows out: needle position telemetry, status display, audit log.
+**System boundary**: The Robotic Bronchoscopy Navigation Subsystem (RBNS) receives a preoperative airway model and target nodule coordinates, maintains a real-time tip position estimate, and outputs motion guidance commands. It excludes the robot kinematics and actuation stack, the imaging hardware, and the surgeon console rendering pipeline — each separated from the RBNS by a defined interface.
 
-**Level 1 — Functional Decomposition**: Four primary subsystems identified:
+**Functional decomposition**: Four primary subsystems:
 
-- **Sensing Subsystem** — processes image feeds and needle position sensors; outputs a unified spatial model
-- **Path Planning Subsystem** — consumes the spatial model and surgeon intent; outputs a commanded trajectory
-- **Actuation Subsystem** — executes commanded trajectories against the physical needle insertion mechanism
-- **Safety Monitor** — cross-cuts the above; intercepts out-of-envelope commands and maintains a fault log
+- **Localization & Tracking** — fuses proprioceptive (forward kinematics), vision-based, and image-registration position estimates into a single tip pose with an explicit 3D uncertainty ellipsoid
+- **Path Planning & Guidance** — plans an airway route to the target, updates it in real time, and generates guidance commands
+- **Image Processing & Registration** — ingests intraoperative imaging volumes and registers them to the preoperative model, producing a registration confidence score
+- **Procedure Supervisor** — the sole external interface point; runs the procedure state machine and centralizes fault handling
 
-**Interface Definition**: Each subsystem interface is being defined with: signal name, data type/format, directionality, timing/frequency, error handling behavior, and the requirement(s) it serves. This becomes the basis for the ICD document.
+**Interface registry**: All interfaces — external, inter-subsystem, and intra-subsystem — are defined in a single change-controlled registry: data items, units, rates, and latency requirements. Diagrams and documents conform to the registry; discrepancies are treated as defects in the downstream artifact.
+
+**Requirements hierarchy**: User needs, system requirements, subsystem requirements, and component requirements, each with a verification method and a trace to its parent tier. Several component requirements remain explicitly open (TBD), pending kinematic and statistical analyses not yet performed — surfaced rather than filled in with placeholder values.
 
 ### Modeling Decisions
 
-The sensing and planning layers are deliberately kept separate even though they could be collapsed. The boundary between them is the point where raw sensor data becomes a coordinate-space representation — a meaningful interface because it's where calibration uncertainty lives and where a safety argument about spatial accuracy needs to be made.
+**Sensor fusion over single-source ground truth.** Image-based registration is periodic and high-accuracy; proprioceptive and vision-based estimates are continuous but lower-accuracy. Rather than treating registration as ground truth, an Extended Kalman Filter fuses all three, treating registration as a periodic correction to a continuous estimate — the appropriate model given how infrequently registration can run.
 
-The safety monitor is currently modeled as a separate block with its own interface to actuation (command veto authority). An alternative — making it an aspect of the planning layer — was considered and rejected because it would conflate functional correctness with safety integrity, which makes independent V&V harder.
+**Uncertainty as an explicit interface output.** The localization subsystem's output to path planning carries a 3D uncertainty ellipsoid alongside the position estimate, not as optional metadata but as a mandatory typed field. This makes a downstream safety rule possible: when position uncertainty exceeds a configurable threshold, replanning is inhibited and the system holds rather than acts on an estimate it cannot trust.
+
+**Procedure Supervisor as sole external interface point.** No internal subsystem communicates directly with an external system — all external interfaces route through the supervisor. This keeps the functional subsystems independently testable (they can be driven by supervisor-equivalent commands without a live console or imaging system) and centralizes fault response logic in one place.
+
+---
+
+Full documentation — interface registry, requirements hierarchy, design decisions, and the Modelio build plan — is in the project repository.
