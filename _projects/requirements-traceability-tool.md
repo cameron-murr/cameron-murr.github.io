@@ -34,13 +34,12 @@ artifacts:
     link: https://cameron-murr.github.io/medtrace/examples/sample_output/traceability_matrix.html
 
 reflection: |
-  The most consequential design decision was distinguishing two classes of broken links. A dangling link is a requirement that references an ID that doesn't exist in the loaded data — likely a typo or a deleted test case, and the kind of error that surfaces as a finding in an FDA audit. An unlinked entity is a test case or risk control that exists but isn't referenced by any requirement — likely orphaned verification work. Both get flagged, but they mean different things and warrant different corrective actions. Collapsing them into a single "missing link" error would obscure that distinction.
 
-  The second decision was where traceability ownership lives. Links are carried on the requirement, not the test case. This mirrors the 21 CFR 820.30 model: requirements are the authoritative record, and test cases are evidence against them. A requirement with no test case IDs is visibly uncovered immediately — which is the failure mode regulators care about.
+  The most consequential design decision was distinguishing between three classes of broken traceability. A coverage gap is a requirement that exists but has no linked test cases at all, meaning it has never been verified. A dangling link occurs when a requirement references a test case ID that doesn't actually exist in the data. This would likely be a typo or a deleted test case, which is the kind of error that surfaces as a finding in an FDA audit. An unlinked entity is a test case or risk control that exists but isn't referenced by any requirement. All three get flagged, but they point to different problems and warrant different corrective actions. Categorizing them as a single "missing link" error would obscure that.
 
-  The practical limitation: this tool doesn't replace a purpose-built RM system for a real submission. What it does is demonstrate that I understand what those systems are doing underneath — and that I can implement the data model cleanly without a GUI.
+  The second decision was where the requirement-to-test link lives. Each requirement stores the IDs of the test cases that verify it, rather than the other way around. This matches how 21 CFR 820.30 treats requirements: as the primary record that everything else has to verify against, and it's what makes coverage gaps trivial to detect in the first place.
 
-  The --validate flag with a non-zero exit code on coverage gaps is the feature that closes the loop. It means the tool can run in a GitHub Actions pipeline and fail a PR if traceability coverage drops — the equivalent of a CI gate on design control completeness.
+  The practical limitation: this tool doesn't replace a purpose-built requirements management system for a real submission. What it does is demonstrate that I understand what those systems are doing underneath and that I understand the underlying data model well enough to implement it directly in code.
 
 standards:
   - 21 CFR 820.30 — Design Controls (design input/output traceability, DHF requirements)
@@ -55,7 +54,7 @@ The tool has three layers: ingest, matrix builder, and renderers.
 
 **Ingest** (`medtrace/ingest.py`) reads requirements, test cases, and risk controls from CSV or YAML. A unified `load_file(path, entity)` dispatcher routes by file extension. The parser is tolerant of missing optional fields and raises clear errors on missing required fields (`id`, `title`), with line numbers for CSV sources.
 
-**Matrix builder** (`medtrace/matrix.py`) resolves all cross-references between the three entity types, producing `ResolvedRow` objects that carry fully hydrated test case and risk control objects rather than raw ID strings. Dangling links (references to nonexistent IDs) and unlinked entities (test cases or risk controls not referenced by any requirement) are detected separately and surfaced as distinct warning classes. Coverage statistics are computed at this layer.
+**Matrix builder** (`medtrace/matrix.py`) resolves all cross-references between the three entity types, producing `ResolvedRow` objects that carry the actual test case and risk control objects rather than raw ID strings. Dangling links (references to nonexistent IDs) and unlinked entities (test cases or risk controls not referenced by any requirement) are detected separately and surfaced as distinct warning classes. Coverage statistics are computed at this layer.
 
 **Renderers** (`medtrace/renderers/`) are independently swappable. Five formats are implemented: self-contained HTML with inline CSS, paginated landscape PDF via ReportLab, structured JSON for downstream tooling integrations, XLSX with four sheets (Summary, RTM, Test Cases, Risk Controls) via openpyxl, and a diff renderer that compares two matrix snapshots and reports added, removed, and modified requirements with regression flagging.
 

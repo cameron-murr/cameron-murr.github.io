@@ -8,7 +8,7 @@ title: About
 
   <h1 style="font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 500; letter-spacing: -0.03em; margin-bottom: 2.5rem; max-width: 20ch; line-height: 1.1;">
     Cameron Murr.<br>
-    <em style="font-family: var(--font-serif); font-weight: 400; font-style: italic;">Engineer in progress.</em>
+    <em style="font-family: var(--font-serif); font-weight: 400; font-style: italic;">Medical Device Engineer.</em>
   </h1>
 
   <div class="about-grid">
@@ -16,20 +16,23 @@ title: About
 
       <h2>Background</h2>
       <p>
-        I'm a Human Factors Engineer at Design Science Inc., a medical device consultancy in Philadelphia. My work covers formative and summative usability studies, use-related risk analyses, uFMEAs, and HFE/UE reports for FDA 510(k) and EU MDR submissions across Class II and Class III devices.
+        I'm a Human Factors Engineer at Design Science Inc., a medical device consultancy in Philadelphia. My work covers formative and summative usability studies, use-related risk analyses, uFMEAs, and HFE/UE reports for FDA 510(k) and EU MDR submissions. I manage cross-functional teams to generate deliverables and I lead communication with various client stakeholders (engineering, regulatory, quality, clinical, marketing) to ensure that their documentation is complete and traceable.
       </p>
       <p>
-        Before Design Science, I completed a dual degree in biomedical engineering and computer science at Duke, followed by an MEng through Duke's Design Health fellowship, a clinical immersion program focused on translational device development. My capstone project was a chest tube navigation device. Prior to that, I interned at Boston Scientific's Cardiac Rhythm Management division, where I first got exposure to usability engineering.
+        Before Design Science, I double majored in Biomedical Engineering and Computer Science at Duke, followed by a Master of Engineering Management and completion of Duke's Design Health Fellowship in medical device design along with a certificate in Innovation and Entrepreneurship. During my fellowship I owned the full design controls process, starting with contextual inquiry and shadowing to identify unmet clinical needs, moving through user needs definition, requirements development, iterative design, and verification and validation. My capstone project was a chest tube navigation device for inserting chest tubes into the pleural cavity in a trauma care setting.
+      </p>
+      <p>
+        Outside of academics, I interned at Boston Scientific in their Cardiac Rhythm Management division, where I developed automated layout verification and image processing tools that improved review efficiency by 80% and gave me exposure to working in a regulated medical device development environment. I've also co-authored published research at Duke Health on AI-based radiation treatment plan for breast cancer patients, evaluating model-generated plans against clinical benchmarks. Separately, I built a machine learning model on event-based data from thousands of competitive soccer matches to quantify player impact, which I leveraged into actionable insights to provide the coaching staff and impact game strategy.
       </p>
 
       <h2>Target Domain</h2>
       <p>
-        Surgical and interventional robotics, primarily. Secondary interests include cardiac electrophysiology platforms and wearable biosensors. I'm targeting roles in the San Francisco Bay Area, where I'm relocating in 2026.
+        Surgical and interventional robotics, wearable biosensors, medical imaging systems, AI-integrated medical devices, cardiac electrophysiology platforms. I'm targeting roles in the San Francisco Bay Area, where I'm relocating to in 2026.
       </p>
 
       <h2>This Portfolio</h2>
       <p>
-        The five projects here cover areas my current role doesn't: requirements management tooling, SysML modeling, embedded hardware, software development planning per IEC 62304, and real-time control systems. They're not finished products. They're engineering work in progress.
+        The five projects here cover areas my current role doesn't: requirements management tooling, model-based systems engineering (SysML), embedded hardware, software development planning per IEC 62304, and real-time control systems.
       </p>
       <p>
         Project 01 is complete. The rest are being built out in order. Code repositories and document artifacts will be linked as they're finished.
@@ -73,12 +76,26 @@ title: About
       <div class="sidebar-block">
         <div class="sidebar-block-label">Technical Skills</div>
         <ul>
-          <li>Python (primary)</li>
-          <li>C / Arduino firmware</li>
-          <li>SysML / Papyrus</li>
-          <li>Git / version control</li>
+          <li>Python, C/C++, Java</li>
+          <li>Machine Learning / AI</li>
+          <li>Arduino firmware</li>
+          <li>SysML / MBSE</li>
+          <li>Onshape (CAD)</li>
+          <li>Git / Linux</li>
           <li>MATLAB (signal processing)</li>
           <li>Human factors methods</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-block-label">Process & Management</div>
+        <ul>
+          <li>Design Controls</li>
+          <li>Requirements Development</li>
+          <li>Cross-Functional Leadership</li>
+          <li>Stakeholder Alignment</li>
+          <li>Project Scoping</li>
+          <li>Risk Management</li>
         </ul>
       </div>
 

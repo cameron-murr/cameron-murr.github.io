@@ -1,6 +1,6 @@
 title: Cameron Murr — Engineering Portfolio
 description: >
-  Engineering portfolio. Documenting the build.
+  Engineering portfolio covering requirements traceability, systems architecture, robotics, medical devices, software, and drone systems.
 baseurl: ""
 url: "https://cameron-murr.github.io"
 
@@ -8,7 +8,7 @@ author:
   name: Cameron Murr
   role: Medical Device Engineer
   background: >
-    BME + CS + MEng, Duke University
+    BME + CS + MEng, Duke University. Medical Device Design Fellowship, Design Health. Software Engineer, Boston Scientific. Human Factors Engineer, Design Science.
 
 permalink: /projects/:name/
 
