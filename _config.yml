@@ -10,8 +10,6 @@ author:
   background: >
     BME + CS + MEng, Duke University. Medical Device Design Fellowship, Design Health. Software Engineer, Boston Scientific. Human Factors Engineer, Design Science.
 
-permalink: /projects/:name/
-
 collections:
   projects:
     output: true
