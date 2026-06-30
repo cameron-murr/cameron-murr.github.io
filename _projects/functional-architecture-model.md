@@ -64,6 +64,11 @@ The model package is organized around a single canonical interface registry and 
 **System boundary**: The Robotic Bronchoscopy Navigation Subsystem (RBNS) receives a preoperative airway model and target nodule coordinates, maintains a real-time tip position estimate, and outputs motion guidance commands. It excludes the robot kinematics and actuation stack, the imaging hardware, and the surgeon console rendering pipeline — each separated from the RBNS by a defined interface.
 
 <figure class="project-figure">
+  <img src="https://raw.githubusercontent.com/cameron-murr/Robotic-Surgical-Architecture-Model/main/model/diagrams/D2_system_context.svg" alt="System context block definition diagram showing the RBNS at the center surrounded by seven external actors, including the Preoperative Planning System, CBCT Imaging System, Robot Motion Controller, Operator Console, Safety and Interlock System, Procedure Data Recorder, and Bronchoscope Camera, connected by eleven labeled external interfaces">
+  <figcaption>System context (BDD) — the RBNS and its complete external interface surface, before any internal structure is defined.</figcaption>
+</figure>
+
+<figure class="project-figure">
   <img src="https://raw.githubusercontent.com/cameron-murr/Robotic-Surgical-Architecture-Model/main/model/diagrams/D3_structural_hierarchy.svg" alt="Structural hierarchy block definition diagram showing the RBNS decomposed into Localization & Tracking, Path Planning & Guidance, Image Processing & Registration, and Procedure Supervisor subsystems">
   <figcaption>Structural hierarchy (BDD) — the RBNS decomposed into its four primary subsystems.</figcaption>
 </figure>
@@ -76,6 +81,11 @@ The model package is organized around a single canonical interface registry and 
 - **Procedure Supervisor** — primary external interface point; runs the six-state procedure state machine (IDLE → NAVIGATE → CONFIRM → BIOPSY → FAULT → ABORT) and centralizes fault handling
 
 **Interface registry**: 26 interfaces defined across three tiers — 11 external (Tier 1), 8 inter-subsystem (Tier 2), 7 intra-subsystem (Tier 3) — each with data items, rate, latency requirement, and direction. Change-controlled with a changelog; all downstream artifacts conform to it.
+
+<figure class="project-figure">
+  <img src="https://raw.githubusercontent.com/cameron-murr/Robotic-Surgical-Architecture-Model/main/model/diagrams/D4_RBNS_internal_structure.svg" alt="Internal block diagram showing the RBNS opened up to reveal its four internal subsystems, their interconnections, and the eleven external boundary ports routing to the subsystems that consume or produce each interface">
+  <figcaption>Internal structure (IBD) — internal connectors between subsystems plus the complete realization of external boundary ports, including the Supervisor routing exception for high-rate sensor feeds.</figcaption>
+</figure>
 
 **Requirements hierarchy**: 31 requirements across four tiers. User needs are clinical intent statements. System requirements describe platform-level capabilities without specifying internal architecture. Subsystem requirements allocate functional and safety obligations to specific RBNS blocks. Component requirements are derived values pending kinematic and statistical analyses — explicitly marked TBD rather than filled with invented numbers.
 
