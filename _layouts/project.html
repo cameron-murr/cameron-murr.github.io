@@ -65,10 +65,10 @@ layout: default
 
   <div class="project-nav">
     {% if page.previous %}
-    <a href="{{ page.previous }}" class="project-nav-link prev">← Previous</a>
+    <a href="{{ page.previous.url | relative_url }}" class="project-nav-link prev">← Previous</a>
     {% endif %}
     {% if page.next %}
-    <a href="{{ page.next }}" class="project-nav-link next">Next →</a>
+    <a href="{{ page.next.url | relative_url }}" class="project-nav-link next">Next →</a>
     {% endif %}
   </div>
 
