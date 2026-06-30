@@ -25,7 +25,7 @@ artifacts:
   - type: Output Artifact
     name: Requirements Traceability Matrix (HTML)
     description: medtrace-generated RTM — 31 requirements across four tiers, 31 planned verification activities, 100% coverage. All test cases not_run, reflecting architecture-phase status.
-    link: https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/rtm.html
+    link: https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/medtrace-output/rtm.html
   - type: Document
     name: Interface Registry
     description: Canonical, change-controlled definition of all 26 interfaces across three tiers — external, inter-subsystem, and intra-subsystem — with data items, rates, latency requirements, and a naming mapping to the Papyrus model.
