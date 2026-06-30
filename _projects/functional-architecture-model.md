@@ -9,7 +9,7 @@ tags:
   - Functional Architecture
   - Interventional Robotics
   - Interface Control
-  - Modelio
+  - Papyrus / Eclipse
 
 problem: |
   Systems architecture for a robotic surgical subsystem is most useful when it's done before detailed design — when there's still room to surface ambiguous interfaces, misallocated functions, and missing requirements. Most published SysML examples are either toy problems or retroactively describe systems that already exist.
@@ -30,7 +30,7 @@ artifacts:
     description: Key architectural decisions with rationale, including sensor fusion architecture, uncertainty propagation, replanning inhibition, and centralized fault handling.
     status: complete
   - type: SysML Model
-    name: Modelio Model Set
+    name: Papyrus SysML Model Set
     description: Eight SysML diagrams — system context, structural hierarchy, internal block diagrams for each subsystem, a procedure supervisor state machine, and a requirements traceability diagram.
     status: in-progress
 
@@ -39,7 +39,7 @@ reflection: |
 
   Building out the requirements hierarchy clarified a distinction that's easy to get wrong: a system requirement should describe a required capability — reach into a defined airway workspace — rather than a specific kinematic implementation, such as a bend angle. The bend angle is a derived component requirement, produced by kinematic analysis against the workspace requirement, not asserted from clinical need directly. Getting this level of decomposition right is exactly the kind of judgment that distinguishes a requirement from a design solution.
 
-  Currently building the formal SysML model in Modelio, working from the interface registry and requirements hierarchy as source material rather than deriving the model from the diagrams.
+  The formal SysML model is built in Papyrus with the SysML 1.6 profile, working from the interface registry and requirements hierarchy as source material. Eight diagrams cover model organization, system context, structural hierarchy, internal block structure at two levels, the RBNS procedure state machine, and requirements traceability.
 
 standards:
   - ISO/IEC 19514 — SysML 1.4 specification
@@ -76,4 +76,4 @@ The model package is organized around a single canonical interface registry and 
 
 ---
 
-Full documentation — interface registry, requirements hierarchy, design decisions, and the Modelio build plan — is in the project repository.
+Full documentation — interface registry, requirements hierarchy, design decisions, and the SysML build plan — is in the project repository.
