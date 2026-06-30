@@ -25,7 +25,7 @@ artifacts:
   - type: Output Artifact
     name: Requirements Traceability Matrix (HTML)
     description: medtrace-generated RTM — 31 requirements across four tiers, 31 planned verification activities, 100% coverage. All test cases not_run, reflecting architecture-phase status.
-    link: https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/medtrace-output/rtm.html
+    link: https://cameron-murr.github.io/Robotic-Surgical-Architecture-Model/docs/medtrace-output/rtm.html
   - type: Document
     name: Interface Registry
     description: Canonical, change-controlled definition of all 26 interfaces across three tiers — external, inter-subsystem, and intra-subsystem — with data items, rates, latency requirements, and a naming mapping to the Papyrus model.
@@ -63,6 +63,11 @@ The model package is organized around a single canonical interface registry and 
 
 **System boundary**: The Robotic Bronchoscopy Navigation Subsystem (RBNS) receives a preoperative airway model and target nodule coordinates, maintains a real-time tip position estimate, and outputs motion guidance commands. It excludes the robot kinematics and actuation stack, the imaging hardware, and the surgeon console rendering pipeline — each separated from the RBNS by a defined interface.
 
+<figure class="project-figure">
+  <img src="https://raw.githubusercontent.com/cameron-murr/Robotic-Surgical-Architecture-Model/main/model/diagrams/D3_structural_hierarchy.svg" alt="Structural hierarchy block definition diagram showing the RBNS decomposed into Localization & Tracking, Path Planning & Guidance, Image Processing & Registration, and Procedure Supervisor subsystems">
+  <figcaption>Structural hierarchy (BDD) — the RBNS decomposed into its four primary subsystems.</figcaption>
+</figure>
+
 **Functional decomposition**: Four primary subsystems:
 
 - **Localization & Tracking** — fuses proprioceptive (forward kinematics), vision-based, and CBCT image-registration position estimates into a single tip pose with an explicit 3D uncertainty ellipsoid via Extended Kalman Filter
@@ -75,6 +80,11 @@ The model package is organized around a single canonical interface registry and 
 **Requirements hierarchy**: 31 requirements across four tiers. User needs are clinical intent statements. System requirements describe platform-level capabilities without specifying internal architecture. Subsystem requirements allocate functional and safety obligations to specific RBNS blocks. Component requirements are derived values pending kinematic and statistical analyses — explicitly marked TBD rather than filled with invented numbers.
 
 **SysML model**: Eight diagrams built in Papyrus with the SysML 1.6 profile. IBDs include both internal connectors and outer boundary ports, making each diagram a complete picture of its block's internal structure and external interface realizations. The D7 state machine includes entry actions, guard conditions, and a FinalState, and satisfies SUB-REQ-008 directly.
+
+<figure class="project-figure">
+  <img src="https://raw.githubusercontent.com/cameron-murr/Robotic-Surgical-Architecture-Model/main/model/diagrams/D7_RBNS_state_machine.svg" alt="State machine diagram showing the six-state procedure flow: IDLE, NAVIGATE, CONFIRM, BIOPSY, FAULT, and ABORT, with guard conditions and entry actions">
+  <figcaption>Procedure state machine (D7) — six states with entry actions and guard conditions, satisfying SUB-REQ-008.</figcaption>
+</figure>
 
 **Requirements traceability**: All 31 requirements linked to 31 planned verification activities via medtrace. The RTM is generated from `requirements.csv` and `test_cases.csv` and is available in the repository in HTML and PDF formats.
 
