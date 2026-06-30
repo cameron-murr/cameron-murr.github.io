@@ -517,6 +517,30 @@ li { font-weight: 300; }
 }
 
 /* ============================================
+   PROJECT FIGURES (SVG/image embeds)
+   ============================================ */
+.project-figure {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.project-figure img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+  background: #fff;
+  padding: 1rem;
+}
+
+.project-figure figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-tertiary);
+  margin-top: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================
    ARTIFACTS GRID
    ============================================ */
 .artifacts-grid {
