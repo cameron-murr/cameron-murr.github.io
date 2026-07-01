@@ -93,16 +93,33 @@ The model package is organized around a single canonical interface registry and 
 
 A representative subset across all four tiers. [Full requirements hierarchy →](https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/requirements.md)
 
-| ID | Tier | Type | Description |
+**Tier 1: User Needs**
+
+| ID | User Need |
+|---|---|
+| UN-001 | Physicians need to navigate a bronchoscope to a target nodule identified in preoperative imaging in order to obtain a tissue biopsy. |
+| UN-003 | Patients need assurance that navigation will not cause unintended injury to the airway. |
+
+**Tier 2: System Requirements**
+
+| ID | Requirement | Derived From | Verif. |
 |---|---|---|---|
-| UN-001 | User Need | Functional | Physicians need to navigate a bronchoscope to a target nodule identified in preoperative imaging in order to obtain a tissue biopsy. |
-| UN-003 | User Need | Safety | Patients need assurance that navigation will not cause unintended injury to the airway. |
-| SYS-REQ-001 | System | Functional | The system shall enable a physician to navigate a flexible bronchoscope to target pulmonary nodules identified in preoperative imaging. |
-| SYS-REQ-006 | System | Safety | The system shall detect conditions under which navigation accuracy cannot be assured and shall prevent scope motion under those conditions. |
-| SUB-REQ-001 | Subsystem | Performance | The RBNS shall produce a fused bronchoscope tip pose estimate at a rate of no less than 30 Hz during the NAVIGATE phase. |
-| SUB-REQ-006 | Subsystem | Safety | The RBNS shall command zero scope advancement (HOLD) within one guidance cycle of the tip position uncertainty exceeding the configured threshold. |
-| SUB-REQ-008 | Subsystem | Functional | The RBNS shall implement the procedure state machine with states IDLE, NAVIGATE, CONFIRM, BIOPSY, FAULT, and ABORT with transitions as defined in the procedure state machine model (D7). |
-| COMP-REQ-001 | Component | Functional | The Guidance Command Generator shall support distal tip articulation commands of up to [TBD] degrees per axis sufficient to follow airway centerline curvature at branch points up to the generation depth required by SYS-REQ-001. |
+| SYS-REQ-001 | The system shall enable a physician to navigate a flexible bronchoscope to target pulmonary nodules identified in preoperative imaging. | UN-001, UN-002 | A, D |
+| SYS-REQ-006 | The system shall detect conditions under which navigation accuracy cannot be assured and shall prevent scope motion under those conditions. | UN-003 | T, A |
+
+**Tier 3: Subsystem Requirements**
+
+| ID | Requirement | Allocated To | Traces To | Verif. |
+|---|---|---|---|---|
+| SUB-REQ-001 | The RBNS shall produce a fused bronchoscope tip pose estimate at a rate of no less than 30 Hz during the NAVIGATE phase. | 1.0 / 1.4 | SYS-REQ-001, SYS-REQ-002 | T |
+| SUB-REQ-006 | The RBNS shall command zero scope advancement (HOLD) within one guidance cycle of the tip position uncertainty exceeding the configured threshold. | 2.3 | SYS-REQ-003, SYS-REQ-006 | T |
+| SUB-REQ-008 | The RBNS shall implement the procedure state machine with states IDLE, NAVIGATE, CONFIRM, BIOPSY, FAULT, and ABORT, with transitions as defined in the RBNS procedure state machine model (D7). | 4.0 | SYS-REQ-004 | T, D |
+
+**Tier 4: Component Requirements**
+
+| ID | Requirement | Allocated To | Derived From | Method of Derivation | Verif. |
+|---|---|---|---|---|---|
+| COMP-REQ-001 | The Guidance Command Generator shall support distal tip articulation commands of up to [TBD] degrees per axis sufficient to follow airway centerline curvature at branch points up to the generation depth required by SYS-REQ-001. | GuidanceCommandGenerator | SYS-REQ-001, SUB-REQ-014 | Kinematic reach analysis against airway centerline geometry | A, T |
 
 **SysML model**: Eight diagrams built in Papyrus with the SysML 1.6 profile. IBDs include both internal connectors and outer boundary ports, making each diagram a complete picture of its block's internal structure and external interface realizations. The D7 state machine includes entry actions, guard conditions, and a FinalState.
 
