@@ -13,9 +13,11 @@ tags:
   - Requirements Traceability
 
 problem: |
-  Systems architecture for a robotic surgical subsystem is most useful when it's done before detailed design — when there's still room to surface ambiguous interfaces, misallocated functions, and missing requirements. Most published SysML examples are either toy problems or retroactively describe systems that already exist.
+  Model-Based Systems Engineering (MBSE) and SysML give engineers a formal language for decomposing complex systems before any hardware or software exists. Rather than managing architecture in documents and spreadsheets, a SysML model captures system structure, interfaces, behavior, and requirements in a single connected artifact. This makes it possible to catch interface conflicts, trace requirements to design decisions, and validate architectural assumptions earlier and more rigorously than document-based approaches allow.
 
-  This project takes a different approach: model the functional architecture of a robotic bronchoscopy navigation subsystem at the level of detail a systems engineer would produce early in development. The subsystem maintains a real-time estimate of bronchoscope tip position via multi-source sensor fusion, plans a path through the airway tree to a target nodule, and generates motion guidance commands for a downstream robot motion controller. The deliverables are a change-controlled interface registry, a four-tier requirements hierarchy, a formal SysML model, and a medtrace-generated requirements traceability matrix — artifacts a design team could use as the basis for interface control documents, a verification plan, and a risk management file.
+  I built a functional architecture model for a Robotic Bronchoscopy Navigation Subsystem (RBNS) at the level of detail a systems engineer would produce in early-phase development. The RBNS maintains a real-time estimate of bronchoscope tip position via multi-source sensor fusion, plans a path through the airway tree to a target nodule, and generates motion guidance commands for a downstream robot motion controller.
+
+  The deliverables are a change-controlled interface registry, a four-tier requirements hierarchy, a formal SysML model built in Papyrus, and a requirements traceability matrix (RTM) generated using [medtrace](/projects/requirements-traceability-tool/). Together these artifacts give a design team the basis for interface control documents, a verification plan, and a risk management file.
 
 artifacts:
   - type: SysML Model + Documentation
@@ -40,13 +42,11 @@ artifacts:
     link: https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/design_decisions.md
 
 reflection: |
-  Establishing the interface registry as the canonical source of truth — rather than treating diagrams as authoritative — surfaced two real defects in the initial concept sketches: an undocumented camera interface feeding the localization subsystem, and a routing contradiction where a guidance command appeared to bypass the central Supervisor. Both were caught by auditing diagrams against the registry. The sketches are retained in the repository to document this process.
+  I've read about MBSE in the context of medical device development, but this was my first time building a full model from scratch. The process of formally defining every interface and allocating every requirement to a specific block surfaced gaps and contradictions that wouldn't have been visible in a document-based approach.
 
-  Building the requirements hierarchy required resolving a scoping question that's easy to get wrong: system requirements and subsystem requirements are different tiers addressing different levels of the architecture. The system requirements describe what the full bronchoscopy platform must do from a clinical perspective; the subsystem requirements describe what the RBNS must do to satisfy them. A further distinction emerged between subsystem and component requirements — a component requirement for bronchoscope tip articulation range is a derived value produced by kinematic reach analysis, not a clinical assertion. Getting this right matters because it determines what analysis is required before the number can be specified.
+  Building the requirements hierarchy required me to distinguish between tiers that operate at different levels of the architecture. System requirements describe what the full bronchoscopy platform must do from a clinical perspective. Subsystem requirements describe what the RBNS must do to satisfy them. Component requirements are derived from analysis. For example, the required bronchoscope tip articulation range is calculated from kinematic reach analysis of the airway geometry, not specified as a clinical need. Getting the scoping right keeps higher-level requirements from encoding implementation decisions before the analysis exists to support them.
 
-  A second architectural judgment surfaced during IBD construction: Design Decision 5 originally stated that all external interfaces route through the Procedure Supervisor. Building the internal block diagrams in Papyrus exposed a contradiction — routing 100 Hz encoder telemetry and 30 Hz endoscopic video through a central relay that exists to manage a six-state procedure machine adds latency with no architectural benefit. The decision was amended to define an explicit exception for high-rate sensor feeds. The interface registry had this right from the start; the written design decision had not caught up. This is exactly the kind of inconsistency that a registry-first approach is supposed to catch.
-
-  Running medtrace against the completed requirements set produced a clean RTM on the first attempt after correcting the column linkage schema. 100% coverage with all test cases not_run is the correct and honest state for an architecture-phase model — every requirement has a defined verification method and a planned test case, while being explicit that none have been executed.
+  I used the interface registry as a canonical source of truth rather than treating diagrams as authoritative. Diagrams are representations of the architecture; the registry is the architecture. Running [medtrace](/projects/requirements-traceability-tool/) against the completed requirements set produced a clean RTM with 100% coverage and all test cases marked not_run, which is the correct state for an architecture-phase artifact: verification has been planned and every requirement has a defined method, but no testing has been executed yet.
 
 standards:
   - OMG SysML 1.6
@@ -59,9 +59,9 @@ standards:
 
 ### Architecture Overview
 
-The model package is organized around a single canonical interface registry and a four-tier requirements hierarchy, with the SysML model built from both rather than the other way around. This sequencing — registry and requirements before diagrams — is the key architectural discipline: diagrams conform to the registry, not vice versa.
+The model package is organized around a single canonical interface registry and a four-tier requirements hierarchy, with the SysML model built from both.
 
-**System boundary**: The Robotic Bronchoscopy Navigation Subsystem (RBNS) receives a preoperative airway model and target nodule coordinates, maintains a real-time tip position estimate, and outputs motion guidance commands. It excludes the robot kinematics and actuation stack, the imaging hardware, and the surgeon console rendering pipeline — each separated from the RBNS by a defined interface.
+**System boundary**: The Robotic Bronchoscopy Navigation Subsystem (RBNS) receives a preoperative airway model and target nodule coordinates, maintains a real-time tip position estimate, and outputs motion guidance commands. It excludes the robot kinematics and actuation stack, the imaging hardware, and the surgeon console rendering pipeline, each of which is separated from the RBNS by a defined interface.
 
 <figure class="project-figure">
   <img src="https://raw.githubusercontent.com/cameron-murr/Robotic-Surgical-Architecture-Model/main/model/diagrams/D2_system_context.svg" alt="System context block definition diagram showing the RBNS at the center surrounded by seven external actors, including the Preoperative Planning System, CBCT Imaging System, Robot Motion Controller, Operator Console, Safety and Interlock System, Procedure Data Recorder, and Bronchoscope Camera, connected by eleven labeled external interfaces">
@@ -78,7 +78,7 @@ The model package is organized around a single canonical interface registry and 
 - **Localization & Tracking** — fuses proprioceptive (forward kinematics), vision-based, and CBCT image-registration position estimates into a single tip pose with an explicit 3D uncertainty ellipsoid via Extended Kalman Filter
 - **Path Planning & Guidance** — plans an airway route to the target using A* on the preoperative airway graph, updates it in real time, and generates safety-bounded guidance commands
 - **Image Processing & Registration** — ingests intraoperative CBCT volumes and registers them to the preoperative model, producing a registered volume and a confidence score
-- **Procedure Supervisor** — primary external interface point; runs the six-state procedure state machine (IDLE → NAVIGATE → CONFIRM → BIOPSY → FAULT → ABORT) and centralizes fault handling
+- **Procedure Supervisor** — primary external interface point; manages a six-state procedure state machine and centralizes fault handling
 
 **Interface registry**: 26 interfaces defined across three tiers — 11 external (Tier 1), 8 inter-subsystem (Tier 2), 7 intra-subsystem (Tier 3) — each with data items, rate, latency requirement, and direction. Change-controlled with a changelog; all downstream artifacts conform to it.
 
@@ -87,16 +87,31 @@ The model package is organized around a single canonical interface registry and 
   <figcaption>Internal structure (IBD) — internal connectors between subsystems plus the complete realization of external boundary ports, including the Supervisor routing exception for high-rate sensor feeds.</figcaption>
 </figure>
 
-**Requirements hierarchy**: 31 requirements across four tiers. User needs are clinical intent statements. System requirements describe platform-level capabilities without specifying internal architecture. Subsystem requirements allocate functional and safety obligations to specific RBNS blocks. Component requirements are derived values pending kinematic and statistical analyses — explicitly marked TBD rather than filled with invented numbers.
+**Requirements hierarchy**: 31 requirements across four tiers. User needs are clinical intent statements. System requirements describe platform-level capabilities without specifying internal architecture. Subsystem requirements allocate functional and safety obligations to specific RBNS blocks. Component requirements are derived values pending kinematic and statistical analyses, explicitly marked TBD rather than filled with invented numbers.
 
-**SysML model**: Eight diagrams built in Papyrus with the SysML 1.6 profile. IBDs include both internal connectors and outer boundary ports, making each diagram a complete picture of its block's internal structure and external interface realizations. The D7 state machine includes entry actions, guard conditions, and a FinalState, and satisfies SUB-REQ-008 directly.
+### Requirements Sample
+
+A representative subset across all four tiers. [Full requirements hierarchy →](https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/requirements.md)
+
+| ID | Tier | Type | Description |
+|---|---|---|---|
+| UN-001 | User Need | Functional | Physicians need to navigate a bronchoscope to a target nodule identified in preoperative imaging in order to obtain a tissue biopsy. |
+| UN-003 | User Need | Safety | Patients need assurance that navigation will not cause unintended injury to the airway. |
+| SYS-REQ-001 | System | Functional | The system shall enable a physician to navigate a flexible bronchoscope to target pulmonary nodules identified in preoperative imaging. |
+| SYS-REQ-006 | System | Safety | The system shall detect conditions under which navigation accuracy cannot be assured and shall prevent scope motion under those conditions. |
+| SUB-REQ-001 | Subsystem | Performance | The RBNS shall produce a fused bronchoscope tip pose estimate at a rate of no less than 30 Hz during the NAVIGATE phase. |
+| SUB-REQ-006 | Subsystem | Safety | The RBNS shall command zero scope advancement (HOLD) within one guidance cycle of the tip position uncertainty exceeding the configured threshold. |
+| SUB-REQ-008 | Subsystem | Functional | The RBNS shall implement the procedure state machine with states IDLE, NAVIGATE, CONFIRM, BIOPSY, FAULT, and ABORT with transitions as defined in the procedure state machine model (D7). |
+| COMP-REQ-001 | Component | Functional | The Guidance Command Generator shall support distal tip articulation commands of up to [TBD] degrees per axis sufficient to follow airway centerline curvature at branch points up to the generation depth required by SYS-REQ-001. |
+
+**SysML model**: Eight diagrams built in Papyrus with the SysML 1.6 profile. IBDs include both internal connectors and outer boundary ports, making each diagram a complete picture of its block's internal structure and external interface realizations. The D7 state machine includes entry actions, guard conditions, and a FinalState.
 
 <figure class="project-figure">
   <img src="https://raw.githubusercontent.com/cameron-murr/Robotic-Surgical-Architecture-Model/main/model/diagrams/D7_RBNS_state_machine.svg" alt="State machine diagram showing the six-state procedure flow: IDLE, NAVIGATE, CONFIRM, BIOPSY, FAULT, and ABORT, with guard conditions and entry actions">
-  <figcaption>Procedure state machine (D7) — six states with entry actions and guard conditions, satisfying SUB-REQ-008.</figcaption>
+  <figcaption>Procedure state machine (D7) — six states with entry actions and guard conditions.</figcaption>
 </figure>
 
-**Requirements traceability**: All 31 requirements linked to 31 planned verification activities via medtrace. The RTM is generated from `requirements.csv` and `test_cases.csv` and is available in the repository in HTML and PDF formats.
+**Requirements traceability**: All 31 requirements linked to 31 planned verification activities via [medtrace](/projects/requirements-traceability-tool/). The RTM is generated from `requirements.csv` and `test_cases.csv` and is available in the repository in HTML and PDF formats.
 
 ### Data Model
 
@@ -112,10 +127,10 @@ medtrace RTM (31 test cases, 100% coverage)
 
 ### Modeling Decisions
 
-**Sensor fusion over single-source ground truth.** CBCT registration is periodic (radiation dose limits frequency) and high-accuracy; proprioceptive and vision estimates are continuous but lower-accuracy. An EKF fuses all three, treating CBCT registration as a periodic high-accuracy correction to a continuous lower-accuracy estimate — the appropriate model for this sensor topology.
+**Sensor fusion over single-source ground truth.** CBCT registration is periodic (radiation dose limits frequency) and high-accuracy; proprioceptive and vision estimates are continuous but lower-accuracy. An EKF fuses all three, treating CBCT registration as a periodic high-accuracy correction to a continuous lower-accuracy estimate, which is the appropriate model for this sensor topology.
 
 **Uncertainty as a mandatory typed interface field.** IF-01 carries a 3D uncertainty ellipsoid alongside the pose estimate. Downstream path planning gates replanning on this value: if uncertainty exceeds a configurable threshold, the system commands HOLD rather than acting on an estimate it cannot trust. Making uncertainty explicit on the interface makes the safety rule testable and the interface formally verifiable.
 
 **Supervisor centralization with a defined sensor exception.** Command, control, status, and logging interfaces route through the Procedure Supervisor. High-rate sensor feeds (encoder telemetry at 100 Hz, endoscopic video at 30 Hz, CBCT volumes) connect directly to their consuming subsystem. Routing continuous high-bandwidth sensor data through a central relay that exists to manage a six-state procedure machine would add latency with no architectural benefit.
 
-**Registry audit as a defect-detection mechanism.** The initial draw.io concept sketches contained two defects not visible from the diagrams alone: an undocumented external camera interface and a guidance command routed incorrectly. Both were found by auditing diagrams against the registry — the direction that catches errors. The sketches are preserved in `/sketches` to document this.
+**Registry audit as a defect-detection mechanism.** The initial draw.io concept sketches contained two defects not visible from the diagrams alone: an undocumented external camera interface and a guidance command routed incorrectly. Both were found by auditing diagrams against the registry. The sketches are preserved in `/sketches` to document this.

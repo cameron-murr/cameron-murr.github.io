@@ -15,7 +15,7 @@ tags:
 problem: |
   Medical device development under 21 CFR Part 820 and ISO 13485 requires demonstrable linkage between design inputs (requirements), verification activities (test cases), and risk controls. In practice this traceability is often maintained in ad-hoc spreadsheets, making it brittle, difficult to audit, and invisible to automated quality gates.
 
-  The goal here was to build a lightweight Python tool that treats traceability as a structured data problem: ingest requirements, test cases, and risk controls from version-controlled flat files (CSV or YAML), resolve all cross-references, detect coverage gaps and dangling links, and emit a clean matrix in multiple formats suitable for a DHF or regulatory submission without manual reformatting.
+  I built a lightweight Python tool that treats traceability as a structured data problem: ingest requirements, test cases, and risk controls from version-controlled flat files (CSV or YAML), resolve all cross-references, detect coverage gaps and dangling links, and emit a clean matrix in multiple formats suitable for a DHF or regulatory submission without manual reformatting.
 
   Secondary goal: structure the tool the way a real requirements management workflow works — unique requirement IDs, typed requirement categories, hierarchical parent/child relationships, risk control classification per ISO 14971, and a validate mode that returns a non-zero exit code on coverage gaps so it can run as a CI gate.
 
@@ -34,12 +34,11 @@ artifacts:
     link: https://cameron-murr.github.io/medtrace/examples/sample_output/traceability_matrix.html
 
 reflection: |
-
-  The most consequential design decision was distinguishing between three classes of broken traceability. A coverage gap is a requirement that exists but has no linked test cases at all, meaning it has never been verified. A dangling link occurs when a requirement references a test case ID that doesn't actually exist in the data. This would likely be a typo or a deleted test case, which is the kind of error that surfaces as a finding in an FDA audit. An unlinked entity is a test case or risk control that exists but isn't referenced by any requirement. All three get flagged, but they point to different problems and warrant different corrective actions. Categorizing them as a single "missing link" error would obscure that.
+  The most consequential design decision was distinguishing between three classes of broken traceability. A coverage gap is a requirement that exists but has no linked test cases, meaning it has never been verified. A dangling link occurs when a requirement references a test case ID that doesn't exist in the data — a typo or a deleted test case. An unlinked entity is a test case or risk control that exists but isn't referenced by any requirement. All three get flagged, but they point to different problems and warrant different corrective actions. Categorizing them as a single "missing link" error would obscure that.
 
   The second decision was where the requirement-to-test link lives. Each requirement stores the IDs of the test cases that verify it, rather than the other way around. This matches how 21 CFR 820.30 treats requirements: as the primary record that everything else has to verify against, and it's what makes coverage gaps trivial to detect in the first place.
 
-  The practical limitation: this tool doesn't replace a purpose-built requirements management system for a real submission. What it does is demonstrate that I understand what those systems are doing underneath and that I understand the underlying data model well enough to implement it directly in code.
+  This tool isn't a substitute for a purpose-built requirements management system like DOORS or Jama. What it demonstrates is that I understand what those systems are doing underneath and can implement the data model directly in code.
 
 standards:
   - 21 CFR 820.30 — Design Controls (design input/output traceability, DHF requirements)
