@@ -91,35 +91,60 @@ The model package is organized around a single canonical interface registry and 
 
 ### Requirements Sample
 
-A representative subset across all four tiers. [Full requirements hierarchy →](https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/requirements.md)
+A representative subset across all four tiers. <a href="https://github.com/cameron-murr/Robotic-Surgical-Architecture-Model/blob/main/docs/requirements.md" target="_blank">Full requirements hierarchy →</a>
 
-**Tier 1: User Needs**
+<style>
+.req-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.72rem; margin-bottom: 2rem; }
+.req-table th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--rule); color: var(--ink-tertiary); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; white-space: nowrap; }
+.req-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--rule); color: var(--ink-secondary); vertical-align: top; }
+.req-table td:first-child { color: var(--accent); white-space: nowrap; font-weight: 500; }
+.req-table tr:last-child td { border-bottom: none; }
+.req-tier-label { font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink-tertiary); letter-spacing: 0.1em; text-transform: uppercase; margin: 1.5rem 0 0.5rem; }
+</style>
 
-| ID | User Need |
-|---|---|
-| UN-001 | Physicians need to navigate a bronchoscope to a target nodule identified in preoperative imaging in order to obtain a tissue biopsy. |
-| UN-003 | Patients need assurance that navigation will not cause unintended injury to the airway. |
+<p class="req-tier-label">Tier 1 — User Needs</p>
+<table class="req-table">
+  <thead>
+    <tr><th style="width:100px">ID</th><th>User Need</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>UN-001</td><td>Physicians need to navigate a bronchoscope to a target nodule identified in preoperative imaging in order to obtain a tissue biopsy.</td></tr>
+    <tr><td>UN-003</td><td>Patients need assurance that navigation will not cause unintended injury to the airway.</td></tr>
+  </tbody>
+</table>
 
-**Tier 2: System Requirements**
+<p class="req-tier-label">Tier 2 — System Requirements</p>
+<table class="req-table">
+  <thead>
+    <tr><th style="width:100px">ID</th><th>Requirement</th><th style="width:140px">Derived From</th><th style="width:60px">Verif.</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>SYS-REQ-001</td><td>The system shall enable a physician to navigate a flexible bronchoscope to target pulmonary nodules identified in preoperative imaging.</td><td>UN-001, UN-002</td><td>A, D</td></tr>
+    <tr><td>SYS-REQ-006</td><td>The system shall detect conditions under which navigation accuracy cannot be assured and shall prevent scope motion under those conditions.</td><td>UN-003</td><td>T, A</td></tr>
+  </tbody>
+</table>
 
-| ID | Requirement | Derived From | Verif. |
-|---|---|---|---|
-| SYS-REQ-001 | The system shall enable a physician to navigate a flexible bronchoscope to target pulmonary nodules identified in preoperative imaging. | UN-001, UN-002 | A, D |
-| SYS-REQ-006 | The system shall detect conditions under which navigation accuracy cannot be assured and shall prevent scope motion under those conditions. | UN-003 | T, A |
+<p class="req-tier-label">Tier 3 — Subsystem Requirements</p>
+<table class="req-table">
+  <thead>
+    <tr><th style="width:100px">ID</th><th>Requirement</th><th style="width:90px">Allocated To</th><th style="width:160px">Traces To</th><th style="width:60px">Verif.</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>SUB-REQ-001</td><td>The RBNS shall produce a fused bronchoscope tip pose estimate at a rate of no less than 30 Hz during the NAVIGATE phase.</td><td>1.0 / 1.4</td><td>SYS-REQ-001, SYS-REQ-002</td><td>T</td></tr>
+    <tr><td>SUB-REQ-006</td><td>The RBNS shall command zero scope advancement (HOLD) within one guidance cycle of the tip position uncertainty exceeding the configured threshold.</td><td>2.3</td><td>SYS-REQ-003, SYS-REQ-006</td><td>T</td></tr>
+    <tr><td>SUB-REQ-008</td><td>The RBNS shall implement the procedure state machine with states IDLE, NAVIGATE, CONFIRM, BIOPSY, FAULT, and ABORT, with transitions as defined in the RBNS procedure state machine model (D7).</td><td>4.0</td><td>SYS-REQ-004</td><td>T, D</td></tr>
+  </tbody>
+</table>
 
-**Tier 3: Subsystem Requirements**
-
-| ID | Requirement | Allocated To | Traces To | Verif. |
-|---|---|---|---|---|
-| SUB-REQ-001 | The RBNS shall produce a fused bronchoscope tip pose estimate at a rate of no less than 30 Hz during the NAVIGATE phase. | 1.0 / 1.4 | SYS-REQ-001, SYS-REQ-002 | T |
-| SUB-REQ-006 | The RBNS shall command zero scope advancement (HOLD) within one guidance cycle of the tip position uncertainty exceeding the configured threshold. | 2.3 | SYS-REQ-003, SYS-REQ-006 | T |
-| SUB-REQ-008 | The RBNS shall implement the procedure state machine with states IDLE, NAVIGATE, CONFIRM, BIOPSY, FAULT, and ABORT, with transitions as defined in the RBNS procedure state machine model (D7). | 4.0 | SYS-REQ-004 | T, D |
-
-**Tier 4: Component Requirements**
-
-| ID | Requirement | Allocated To | Derived From | Method of Derivation | Verif. |
-|---|---|---|---|---|---|
-| COMP-REQ-001 | The Guidance Command Generator shall support distal tip articulation commands of up to [TBD] degrees per axis sufficient to follow airway centerline curvature at branch points up to the generation depth required by SYS-REQ-001. | GuidanceCommandGenerator | SYS-REQ-001, SUB-REQ-014 | Kinematic reach analysis against airway centerline geometry | A, T |
+<p class="req-tier-label">Tier 4 — Component Requirements</p>
+<table class="req-table">
+  <thead>
+    <tr><th style="width:100px">ID</th><th>Requirement</th><th style="width:180px">Allocated To</th><th style="width:140px">Derived From</th><th style="width:200px">Method of Derivation</th><th style="width:60px">Verif.</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>COMP-REQ-001</td><td>The Guidance Command Generator shall support distal tip articulation commands of up to [TBD] degrees per axis sufficient to follow airway centerline curvature at branch points up to the generation depth required by SYS-REQ-001.</td><td>GuidanceCommandGenerator</td><td>SYS-REQ-001, SUB-REQ-014</td><td>Kinematic reach analysis against airway centerline geometry</td><td>A, T</td></tr>
+  </tbody>
+</table>
 
 **SysML model**: Eight diagrams built in Papyrus with the SysML 1.6 profile. IBDs include both internal connectors and outer boundary ports, making each diagram a complete picture of its block's internal structure and external interface realizations. The D7 state machine includes entry actions, guard conditions, and a FinalState.
 
